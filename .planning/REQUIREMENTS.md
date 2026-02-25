@@ -85,40 +85,40 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| STRT-01 | — | Pending |
-| STRT-02 | — | Pending |
-| STRT-03 | — | Pending |
-| STRT-04 | — | Pending |
-| STRT-05 | — | Pending |
-| NETW-01 | — | Pending |
-| NETW-02 | — | Pending |
-| NETW-03 | — | Pending |
-| NETW-04 | — | Pending |
-| NETW-05 | — | Pending |
-| INFR-01 | — | Pending |
-| INFR-02 | — | Pending |
-| INFR-03 | — | Pending |
-| INFR-04 | — | Pending |
-| BUGF-01 | — | Pending |
-| BUGF-02 | — | Pending |
-| BUGF-03 | — | Pending |
-| BUGF-04 | — | Pending |
-| BUGF-05 | — | Pending |
-| QUAL-01 | — | Pending |
-| QUAL-02 | — | Pending |
-| QUAL-03 | — | Pending |
-| QUAL-04 | — | Pending |
-| QUAL-05 | — | Pending |
-| DEPL-01 | — | Pending |
-| DEPL-02 | — | Pending |
-| DEPL-03 | — | Pending |
-| DEPL-04 | — | Pending |
+| STRT-01 | Phase 5 | Pending |
+| STRT-02 | Phase 5 | Pending |
+| STRT-03 | Phase 5 | Pending |
+| STRT-04 | Phase 1 | Pending |
+| STRT-05 | Phase 2 | Pending |
+| NETW-01 | Phase 3 | Pending |
+| NETW-02 | Phase 3 | Pending |
+| NETW-03 | Phase 3 | Pending |
+| NETW-04 | Phase 3 | Pending |
+| NETW-05 | Phase 3 | Pending |
+| INFR-01 | Phase 1 | Pending |
+| INFR-02 | Phase 1 | Pending |
+| INFR-03 | Phase 1 | Pending |
+| INFR-04 | Phase 1 | Pending |
+| BUGF-01 | Phase 2 | Pending |
+| BUGF-02 | Phase 2 | Pending |
+| BUGF-03 | Phase 2 | Pending |
+| BUGF-04 | Phase 3 | Pending |
+| BUGF-05 | Phase 2 | Pending |
+| QUAL-01 | Phase 4 | Pending |
+| QUAL-02 | Phase 4 | Pending |
+| QUAL-03 | Phase 2 | Pending |
+| QUAL-04 | Phase 2 | Pending |
+| QUAL-05 | Phase 2 | Pending |
+| DEPL-01 | Phase 6 | Pending |
+| DEPL-02 | Phase 6 | Pending |
+| DEPL-03 | Phase 6 | Pending |
+| DEPL-04 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28
+- Mapped to phases: 28
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after initial definition*
+*Last updated: 2026-02-25 after roadmap creation*
