@@ -54,22 +54,45 @@ namespace PhishingReporter
 
         public Bitmap getGroup1Image(IRibbonControl control)
         {
-            return Resources.phishing;
+            try
+            {
+                return Resources.phishing;
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error(ex, "Unhandled exception in getGroup1Image callback");
+                return null;
+            }
         }
 
         // Functions
         public void reportPhishing(Office.IRibbonControl control)
         {
-            Logger.Info("Report phishing button clicked");
-            var areYouSure = MessageBox.Show("Do you want to report this email to the Information Security Team as a potential phishing attempt?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if(areYouSure == DialogResult.Yes)
+            try
             {
-                Logger.Info("User confirmed report submission");
-                reportPhishingEmailToSecurityTeam(control);
+                Logger.Info("Report phishing button clicked");
+                var areYouSure = MessageBox.Show("Do you want to report this email to the Information Security Team as a potential phishing attempt?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if(areYouSure == DialogResult.Yes)
+                {
+                    Logger.Info("User confirmed report submission");
+                    reportPhishingEmailToSecurityTeam(control);
+                }
+                else
+                {
+                    Logger.Info("User cancelled report submission");
+                }
             }
-            else
+            catch (System.Exception ex)
             {
-                Logger.Info("User cancelled report submission");
+                Logger.Error(ex, "Unhandled exception in reportPhishing callback");
+                try
+                {
+                    MessageBox.Show("An unexpected error occurred. Please try again or contact support.", "Error");
+                }
+                catch
+                {
+                    // Swallow silently — even MessageBox can fail in degraded COM states
+                }
             }
         }
 
@@ -157,6 +180,7 @@ namespace PhishingReporter
 
                             // Update GoPhish Campaigns Reported counter
                             Properties.Settings.Default.gophish_reports_counter++;
+                            Properties.Settings.Default.Save();
 
                             // Thanks
                             MessageBox.Show("Good job! You have reported a simulated phishing campaign sent by the Information Security Team.", "We have a winner!");
@@ -166,6 +190,7 @@ namespace PhishingReporter
 
                             // Update Suspecious Emails Reported counter
                             Properties.Settings.Default.suspecious_reports_counter++;
+                            Properties.Settings.Default.Save();
 
                             // Prepare the email body
                             reportEmail.Body = GetCurrentUserInfos();
@@ -359,7 +384,15 @@ namespace PhishingReporter
 
         public string GetCustomUI(string ribbonID)
         {
-            return GetResourceText("PhishingReporter.Ribbon.xml");
+            try
+            {
+                return GetResourceText("PhishingReporter.Ribbon.xml");
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error(ex, "Unhandled exception in GetCustomUI callback");
+                return null;
+            }
         }
 
         #endregion
@@ -369,7 +402,14 @@ namespace PhishingReporter
 
         public void Ribbon_Load(Office.IRibbonUI ribbonUI)
         {
-            this.ribbon = ribbonUI;
+            try
+            {
+                this.ribbon = ribbonUI;
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error(ex, "Unhandled exception in Ribbon_Load callback");
+            }
         }
 
         #endregion
