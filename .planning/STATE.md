@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-02-26T18:33:16.000Z"
+last_updated: "2026-02-26T18:40:58.000Z"
 progress:
   total_phases: 6
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -18,34 +18,34 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** The add-in must load reliably in Outlook and let users report phishing emails without disrupting their workflow.
-**Current focus:** Phase 2 — Code Extraction
+**Current focus:** Phase 2 Complete — Next: Phase 3 (Resilience)
 
 ## Current Position
 
-Phase: 2 of 6 (Code Extraction)
-Plan: 1 of 2 in current phase -- COMPLETE
-Status: In Progress
-Last activity: 2026-02-26 — Completed 02-01-PLAN.md (exception-safe callbacks, Settings persistence, GoPhish enum)
+Phase: 2 of 6 (Code Extraction) -- COMPLETE
+Plan: 2 of 2 in current phase -- COMPLETE
+Status: Phase 2 Complete
+Last activity: 2026-02-26 — Completed 02-02-PLAN.md (UrlExtractor, AttachmentHasher, COM cleanup)
 
-Progress: [████░░░░░░] 27%
+Progress: [█████░░░░░] 33%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 4 min
-- Total execution time: 0.28 hours
+- Total execution time: 0.37 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 14 min | 5 min |
-| 02-code-extraction | 1 | 3 min | 3 min |
+| 02-code-extraction | 2 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (5 min), 01-02 (5 min), 01-03 (4 min), 02-01 (3 min)
-- Trend: stable/improving
+- Last 5 plans: 01-01 (5 min), 01-02 (5 min), 01-03 (4 min), 02-01 (3 min), 02-02 (5 min)
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -65,6 +65,9 @@ Recent decisions affecting current work:
 - [02-01]: Inner try/catch for MessageBox in reportPhishing catch block — COM degradation can cause MessageBox.Show to throw
 - [02-01]: GoPhishResult enum co-located in GoPhishIntegration.cs — small enum with single consumer
 - [02-01]: setReportURL returns null (not enum) for not-found — URL string on success, null on not-found; enum is for send operation
+- [02-02]: For-loop with 1-based index for attachment iteration — enables per-attachment COM release in try/finally without invalidating enumerator
+- [02-02]: Inner try/catch around each Marshal.ReleaseComObject — prevents cleanup exceptions from propagating
+- [02-02]: Property chaining broken into named locals in GetCurrentUserInfos — each intermediate COM object (session, recipient, addrEntry) gets its own release
 
 ### Critical Pitfalls (from research — must not be forgotten)
 
@@ -86,6 +89,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed 02-01-PLAN.md
-Resume command: /gsd:execute-phase 2
-Resume file: .planning/phases/02-code-extraction
+Stopped at: Completed 02-02-PLAN.md (Phase 2 complete)
+Resume command: /gsd:execute-phase 3
+Resume file: .planning/phases/03-resilience

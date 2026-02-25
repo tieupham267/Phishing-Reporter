@@ -32,19 +32,19 @@ Requirements for reliability release. Each maps to roadmap phases.
 
 ### Bug Fixes
 
-- [ ] **BUGF-01**: URL detection correctly captures all links (remove broken Contains("a") filter)
+- [x] **BUGF-01**: URL detection correctly captures all links (remove broken Contains("a") filter)
 - [x] **BUGF-02**: Report counters persist across Outlook sessions (call Settings.Save() after increment)
 - [x] **BUGF-03**: GoPhish integration returns enum/bool instead of magic strings ("OK", "ERROR", "NaN")
 - [ ] **BUGF-04**: HttpWebResponse and StreamReader properly disposed (replaced by HttpClient)
-- [ ] **BUGF-05**: Temporary attachment files cleaned up in finally block
+- [x] **BUGF-05**: Temporary attachment files cleaned up in finally block
 
 ### Code Quality
 
 - [ ] **QUAL-01**: Email processing logic extracted from Ribbon.cs into dedicated EmailProcessor class
 - [ ] **QUAL-02**: GoPhish integration refactored with async HttpClient and proper result types
-- [ ] **QUAL-03**: URL extraction logic extracted into URLExtractor class
-- [ ] **QUAL-04**: Hash calculation logic extracted into AttachmentHasher class
-- [ ] **QUAL-05**: COM objects properly released via Marshal.ReleaseComObject in all processing loops
+- [x] **QUAL-03**: URL extraction logic extracted into URLExtractor class
+- [x] **QUAL-04**: Hash calculation logic extracted into AttachmentHasher class
+- [x] **QUAL-05**: COM objects properly released via Marshal.ReleaseComObject in all processing loops
 
 ### Enterprise Deployment
 
@@ -99,16 +99,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-02 | Phase 1 | Complete |
 | INFR-03 | Phase 1 | Complete |
 | INFR-04 | Phase 1 | Complete |
-| BUGF-01 | Phase 2 | Pending |
+| BUGF-01 | Phase 2 | Complete |
 | BUGF-02 | Phase 2 | Complete |
 | BUGF-03 | Phase 2 | Complete |
 | BUGF-04 | Phase 3 | Pending |
-| BUGF-05 | Phase 2 | Pending |
+| BUGF-05 | Phase 2 | Complete |
 | QUAL-01 | Phase 4 | Pending |
 | QUAL-02 | Phase 4 | Pending |
-| QUAL-03 | Phase 2 | Pending |
-| QUAL-04 | Phase 2 | Pending |
-| QUAL-05 | Phase 2 | Pending |
+| QUAL-03 | Phase 2 | Complete |
+| QUAL-04 | Phase 2 | Complete |
+| QUAL-05 | Phase 2 | Complete |
 | DEPL-01 | Phase 6 | Pending |
 | DEPL-02 | Phase 6 | Pending |
 | DEPL-03 | Phase 6 | Pending |
