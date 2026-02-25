@@ -17,6 +17,7 @@ namespace PhishingReporter
 {
     static class GoPhishIntegration
     {
+        private static readonly NLog.Logger Logger = AppLogger.Instance.GetCurrentClassLogger();
 
         static string GoPhishURL = PhishingReporter.Properties.Settings.Default.gophish_url + ":" + Properties.Settings.Default.gophish_listener_port;
         static string URLrequest = GoPhishURL + "/report?rid=USERID";
@@ -27,6 +28,7 @@ namespace PhishingReporter
         // This function constructs GoPhish report url from a custom header in the simulated phishing campaign email
         public static string setReportURL(string headers)
         {
+            Logger.Debug("Checking email headers for GoPhish campaign marker");
             // Extract GoPhish Custom Header (X-GOPHISH-AJSMN: USERID0123)
             var match = new Regex(WebExpID).Match(headers);
 
@@ -39,11 +41,13 @@ namespace PhishingReporter
 
                     // Build reporting URL, something like this -> https[:]//GOPHISHURL:PORT/report?rid=USERID
                     string report_url = URLrequest.Replace(@"USERID", user_id);
+                    Logger.Info("GoPhish campaign detected, report URL: {0}", report_url);
                     return report_url;
                 }
             }
 
             // else, no header was found -> No report tracking URL
+            Logger.Debug("No GoPhish header found in email");
             return "NaN";
         }
 
@@ -52,17 +56,20 @@ namespace PhishingReporter
 
         public static string sendReportNotificationToServer(string reportURL)
         {
+            Logger.Info("Sending GoPhish report notification to: {0}", reportURL);
             ServicePointManager.SecurityProtocol = Tls12;
 
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(reportURL);            
+                var request = (HttpWebRequest)WebRequest.Create(reportURL);
                 var response = (HttpWebResponse)request.GetResponse();
                 string html = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                Logger.Info("GoPhish notification sent successfully");
                 return "OK";
             }
             catch (System.Exception exc)
             {
+                Logger.Error(exc, "GoPhish notification failed");
                 return "ERROR"; // "GoPhish Listener is not responding or there is no Internet connection."
             }
         }

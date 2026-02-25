@@ -45,6 +45,7 @@ namespace PhishingReporter
     [ComVisible(true)]
     public class Ribbon : Office.IRibbonExtensibility
     {
+        private static readonly NLog.Logger Logger = AppLogger.Instance.GetCurrentClassLogger();
         private Office.IRibbonUI ribbon;
 
         public Ribbon()
@@ -59,10 +60,16 @@ namespace PhishingReporter
         // Functions
         public void reportPhishing(Office.IRibbonControl control)
         {
+            Logger.Info("Report phishing button clicked");
             var areYouSure = MessageBox.Show("Do you want to report this email to the Information Security Team as a potential phishing attempt?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if(areYouSure == DialogResult.Yes)
             {
+                Logger.Info("User confirmed report submission");
                 reportPhishingEmailToSecurityTeam(control);
+            }
+            else
+            {
+                Logger.Info("User cancelled report submission");
             }
         }
 
@@ -72,6 +79,7 @@ namespace PhishingReporter
 
         private void reportPhishingEmailToSecurityTeam(IRibbonControl control)
         {
+            Logger.Info("Processing selected email for phishing report");
 
             Selection selection = Globals.ThisAddIn.Application.ActiveExplorer().Selection;
             string reportedItemType = "NaN"; // email, contact, appointment ...etc
@@ -111,6 +119,8 @@ namespace PhishingReporter
                         reportedItemType = "MailItem";
                     }
 
+                    Logger.Info("Reported item type: {0}", reportedItemType);
+
                     // Prepare Reported Email
                     Object mailItemObj = (selection[1] as object) as Object;
                     MailItem mailItem = (reportedItemType == "MailItem") ? selection[1] as MailItem : null; // If the selected item is an email
@@ -136,10 +146,12 @@ namespace PhishingReporter
 
                         // Check if the email is a simulated phishing campaign by Information Security Team
                         string simulatedPhishingURL = GoPhishIntegration.setReportURL(reportedItemHeaders);
+                        Logger.Info("GoPhish header check: {0}", simulatedPhishingURL != "NaN" ? "found" : "not found");
 
                         if (simulatedPhishingURL != "NaN")
                         {
                             string simulatedPhishingResponse = GoPhishIntegration.sendReportNotificationToServer(simulatedPhishingURL);
+                            Logger.Info("GoPhish notification result: {0}", simulatedPhishingResponse);
                             // DEBUG: to check if reporting email reaches GoPhish Portal
                             // MessageBox.Show(simulatedPhishingURL + " --- " + simulatedPhishingResponse);
 
@@ -167,9 +179,11 @@ namespace PhishingReporter
                             reportEmail.Body += "\n";
                             reportEmail.Body += GetPluginDetails() + "\n\n";
 
+                            Logger.Info("Report email composed for: {0}", mailItem.Subject);
                             reportEmail.Save();
                             //reportEmail.Display(); // Helps in debugginng
                             reportEmail.Send(); // Automatically send the email
+                            Logger.Info("Report email sent to: {0}", Properties.Settings.Default.infosec_email);
 
                             // Enable if you want a second popup for confirmation
                             // MessageBox.Show("Thank you for reporting. We will review this report soon. - Information Security Team", "Thank you");
@@ -177,10 +191,12 @@ namespace PhishingReporter
 
                         // Delete the reported email
                         mailItem.Delete();
+                        Logger.Info("Reported email deleted from mailbox");
 
                     }
                     catch (System.Exception ex)
                     {
+                        Logger.Error(ex, "Error during report processing");
                         MessageBox.Show("There was an error! An automatic email was sent to the support to resolve the issue.", "Do not worry");
 
                         MailItem errorEmail = (MailItem)Globals.ThisAddIn.Application.CreateItem(OlItemType.olMailItem);

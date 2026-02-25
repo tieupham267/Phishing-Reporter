@@ -16,15 +16,20 @@ namespace PhishingReporter
 {
     public partial class ThisAddIn
     {
+        private static readonly NLog.Logger Logger = AppLogger.Instance.GetCurrentClassLogger();
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            
+            Logger.Info("PhishingReporter add-in startup begin");
+            Logger.Info("PhishingReporter add-in startup complete");
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
-            // Note: Outlook no longer raises this event. If you have code that 
+            // Note: Outlook no longer raises this event. If you have code that
             //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
+            Logger.Info("PhishingReporter add-in shutdown");
+            AppLogger.Instance.Shutdown();
         }
 
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
