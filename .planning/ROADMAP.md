@@ -58,7 +58,7 @@ are fixed as part of the extraction; all entry points are exception-safe.
   5. Code inspection shows GoPhish result is an enum or bool type, not the string literals "OK", "ERROR", or "NaN"
 **Plans:** 2 plans
 Plans:
-- [ ] 02-01-PLAN.md — Exception-safe ribbon callbacks, Settings persistence fix, GoPhish enum refactor
+- [x] 02-01-PLAN.md — Exception-safe ribbon callbacks, Settings persistence fix, GoPhish enum refactor
 - [ ] 02-02-PLAN.md — UrlExtractor and AttachmentHasher class extraction, COM object cleanup
 
 ### Phase 3: Async Network Layer
@@ -119,7 +119,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-02-26 |
-| 2. Code Extraction | 0/TBD | Not started | - |
+| 2. Code Extraction | 1/2 | In progress | - |
 | 3. Async Network Layer | 0/TBD | Not started | - |
 | 4. Orchestration | 0/TBD | Not started | - |
 | 5. Startup Reliability | 0/TBD | Not started | - |

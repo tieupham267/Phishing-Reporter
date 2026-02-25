@@ -2,26 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-25T18:09:00.434Z"
+status: in-progress
+last_updated: "2026-02-26T18:33:16.000Z"
 progress:
-  total_phases: 1
+  total_phases: 6
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
----
-
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: phase-complete
-last_updated: "2026-02-26T18:01:41.000Z"
-progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 5
+  completed_plans: 4
 ---
 
 # Project State
@@ -31,33 +18,34 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** The add-in must load reliably in Outlook and let users report phishing emails without disrupting their workflow.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 2 — Code Extraction
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation) -- COMPLETE
-Plan: 3 of 3 in current phase -- ALL COMPLETE
-Status: Phase Complete
-Last activity: 2026-02-26 — Completed 01-03-PLAN.md (NLog logging infrastructure)
+Phase: 2 of 6 (Code Extraction)
+Plan: 1 of 2 in current phase -- COMPLETE
+Status: In Progress
+Last activity: 2026-02-26 — Completed 02-01-PLAN.md (exception-safe callbacks, Settings persistence, GoPhish enum)
 
-Progress: [███░░░░░░░] 17%
+Progress: [████░░░░░░] 27%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 5 min
-- Total execution time: 0.23 hours
+- Total plans completed: 4
+- Average duration: 4 min
+- Total execution time: 0.28 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 14 min | 5 min |
+| 02-code-extraction | 1 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (5 min), 01-02 (5 min), 01-03 (4 min)
-- Trend: stable
+- Last 5 plans: 01-01 (5 min), 01-02 (5 min), 01-03 (4 min), 02-01 (3 min)
+- Trend: stable/improving
 
 *Updated after each plan completion*
 
@@ -74,6 +62,9 @@ Recent decisions affecting current work:
 - [01-01]: BootstrapperPackage Install=false for .NET 4.8 — pre-installed on all target machines (Win10 1903+/Win11)
 - [Phase 01-02]: Used HKPU per-user hive for DoNotDisableAddinList to match existing add-in registration pattern
 - [01-03]: Used isolated LogFactory (not global LogManager) to prevent NLog config conflicts between Outlook add-ins
+- [02-01]: Inner try/catch for MessageBox in reportPhishing catch block — COM degradation can cause MessageBox.Show to throw
+- [02-01]: GoPhishResult enum co-located in GoPhishIntegration.cs — small enum with single consumer
+- [02-01]: setReportURL returns null (not enum) for not-found — URL string on success, null on not-found; enum is for send operation
 
 ### Critical Pitfalls (from research — must not be forgotten)
 
@@ -95,6 +86,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Stopped at: Completed 02-01-PLAN.md
 Resume command: /gsd:execute-phase 2
-Resume file: .planning/phases/02-resilience
+Resume file: .planning/phases/02-code-extraction

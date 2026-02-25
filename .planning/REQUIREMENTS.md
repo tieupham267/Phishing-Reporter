@@ -13,7 +13,7 @@ Requirements for reliability release. Each maps to roadmap phases.
 - [ ] **STRT-02**: CreateRibbonExtensibilityObject overridden in ThisAddIn to eliminate VSTO reflection scan from startup path
 - [ ] **STRT-03**: Add-in startup time stays under Outlook's 1,000ms resiliency threshold on typical enterprise hardware
 - [x] **STRT-04**: Registry DoNotDisableAddinList key deployed via MSI to prevent auto-disabling
-- [ ] **STRT-05**: All ribbon event handler entry points wrapped in try/catch to prevent unhandled exception soft-disable
+- [x] **STRT-05**: All ribbon event handler entry points wrapped in try/catch to prevent unhandled exception soft-disable
 
 ### Network Reliability
 
@@ -33,8 +33,8 @@ Requirements for reliability release. Each maps to roadmap phases.
 ### Bug Fixes
 
 - [ ] **BUGF-01**: URL detection correctly captures all links (remove broken Contains("a") filter)
-- [ ] **BUGF-02**: Report counters persist across Outlook sessions (call Settings.Save() after increment)
-- [ ] **BUGF-03**: GoPhish integration returns enum/bool instead of magic strings ("OK", "ERROR", "NaN")
+- [x] **BUGF-02**: Report counters persist across Outlook sessions (call Settings.Save() after increment)
+- [x] **BUGF-03**: GoPhish integration returns enum/bool instead of magic strings ("OK", "ERROR", "NaN")
 - [ ] **BUGF-04**: HttpWebResponse and StreamReader properly disposed (replaced by HttpClient)
 - [ ] **BUGF-05**: Temporary attachment files cleaned up in finally block
 
@@ -89,7 +89,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRT-02 | Phase 5 | Pending |
 | STRT-03 | Phase 5 | Pending |
 | STRT-04 | Phase 1 | Complete |
-| STRT-05 | Phase 2 | Pending |
+| STRT-05 | Phase 2 | Complete |
 | NETW-01 | Phase 3 | Pending |
 | NETW-02 | Phase 3 | Pending |
 | NETW-03 | Phase 3 | Pending |
@@ -100,8 +100,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-03 | Phase 1 | Complete |
 | INFR-04 | Phase 1 | Complete |
 | BUGF-01 | Phase 2 | Pending |
-| BUGF-02 | Phase 2 | Pending |
-| BUGF-03 | Phase 2 | Pending |
+| BUGF-02 | Phase 2 | Complete |
+| BUGF-03 | Phase 2 | Complete |
 | BUGF-04 | Phase 3 | Pending |
 | BUGF-05 | Phase 2 | Pending |
 | QUAL-01 | Phase 4 | Pending |
@@ -121,4 +121,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after roadmap creation*
+*Last updated: 2026-02-26 after 02-01 plan completion*
