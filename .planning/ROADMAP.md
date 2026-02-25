@@ -56,7 +56,10 @@ are fixed as part of the extraction; all entry points are exception-safe.
   3. An unhandled exception thrown inside any ribbon event handler does not silently disable the add-in (Outlook's COM Add-ins dialog still shows the add-in as loaded)
   4. After reporting an email with attachments, no temporary files remain in the user's temp directory from that operation
   5. Code inspection shows GoPhish result is an enum or bool type, not the string literals "OK", "ERROR", or "NaN"
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 02-01-PLAN.md — Exception-safe ribbon callbacks, Settings persistence fix, GoPhish enum refactor
+- [ ] 02-02-PLAN.md — UrlExtractor and AttachmentHasher class extraction, COM object cleanup
 
 ### Phase 3: Async Network Layer
 **Goal**: The GoPhish HTTP notification executes on a background thread via a static HttpClient
