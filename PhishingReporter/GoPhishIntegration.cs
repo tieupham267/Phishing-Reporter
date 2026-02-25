@@ -15,6 +15,22 @@ using PhishingReporter;
 
 namespace PhishingReporter
 {
+    /// <summary>
+    /// Result of GoPhish campaign detection and reporting.
+    /// Replaces magic strings "OK", "ERROR", and "NaN".
+    /// </summary>
+    internal enum GoPhishResult
+    {
+        /// <summary>No GoPhish header found in email -- not a simulated campaign.</summary>
+        NotFound,
+
+        /// <summary>GoPhish campaign detected and successfully reported to server.</summary>
+        Reported,
+
+        /// <summary>GoPhish campaign detected but reporting failed (network error, timeout).</summary>
+        Error
+    }
+
     static class GoPhishIntegration
     {
         private static readonly NLog.Logger Logger = AppLogger.Instance.GetCurrentClassLogger();
@@ -48,13 +64,13 @@ namespace PhishingReporter
 
             // else, no header was found -> No report tracking URL
             Logger.Debug("No GoPhish header found in email");
-            return "NaN";
+            return null;
         }
 
         public const SslProtocols _strTls12 = (SslProtocols)0x00000C00;
         public const SecurityProtocolType Tls12 = (SecurityProtocolType)_strTls12;
 
-        public static string sendReportNotificationToServer(string reportURL)
+        public static GoPhishResult sendReportNotificationToServer(string reportURL)
         {
             Logger.Info("Sending GoPhish report notification to: {0}", reportURL);
             ServicePointManager.SecurityProtocol = Tls12;
@@ -65,12 +81,12 @@ namespace PhishingReporter
                 var response = (HttpWebResponse)request.GetResponse();
                 string html = new StreamReader(response.GetResponseStream()).ReadToEnd();
                 Logger.Info("GoPhish notification sent successfully");
-                return "OK";
+                return GoPhishResult.Reported;
             }
             catch (System.Exception exc)
             {
                 Logger.Error(exc, "GoPhish notification failed");
-                return "ERROR"; // "GoPhish Listener is not responding or there is no Internet connection."
+                return GoPhishResult.Error; // GoPhish Listener is not responding or there is no Internet connection.
             }
         }
     }

@@ -169,12 +169,12 @@ namespace PhishingReporter
 
                         // Check if the email is a simulated phishing campaign by Information Security Team
                         string simulatedPhishingURL = GoPhishIntegration.setReportURL(reportedItemHeaders);
-                        Logger.Info("GoPhish header check: {0}", simulatedPhishingURL != "NaN" ? "found" : "not found");
+                        Logger.Info("GoPhish header check: {0}", simulatedPhishingURL != null ? "found" : "not found");
 
-                        if (simulatedPhishingURL != "NaN")
+                        if (simulatedPhishingURL != null)
                         {
-                            string simulatedPhishingResponse = GoPhishIntegration.sendReportNotificationToServer(simulatedPhishingURL);
-                            Logger.Info("GoPhish notification result: {0}", simulatedPhishingResponse);
+                            GoPhishResult goPhishResult = GoPhishIntegration.sendReportNotificationToServer(simulatedPhishingURL);
+                            Logger.Info("GoPhish notification result: {0}", goPhishResult);
                             // DEBUG: to check if reporting email reaches GoPhish Portal
                             // MessageBox.Show(simulatedPhishingURL + " --- " + simulatedPhishingResponse);
 
