@@ -12,7 +12,7 @@ Requirements for reliability release. Each maps to roadmap phases.
 - [ ] **STRT-01**: Add-in initialization deferred to Application.Startup event (outside Outlook's resiliency measurement window)
 - [ ] **STRT-02**: CreateRibbonExtensibilityObject overridden in ThisAddIn to eliminate VSTO reflection scan from startup path
 - [ ] **STRT-03**: Add-in startup time stays under Outlook's 1,000ms resiliency threshold on typical enterprise hardware
-- [ ] **STRT-04**: Registry DoNotDisableAddinList key deployed via MSI to prevent auto-disabling
+- [x] **STRT-04**: Registry DoNotDisableAddinList key deployed via MSI to prevent auto-disabling
 - [ ] **STRT-05**: All ribbon event handler entry points wrapped in try/catch to prevent unhandled exception soft-disable
 
 ### Network Reliability
@@ -25,10 +25,10 @@ Requirements for reliability release. Each maps to roadmap phases.
 
 ### Infrastructure
 
-- [ ] **INFR-01**: Project upgraded to .NET Framework 4.8 (pre-installed on Windows 10/11, extended support)
+- [x] **INFR-01**: Project upgraded to .NET Framework 4.8 (pre-installed on Windows 10/11, extended support)
 - [ ] **INFR-02**: NLog file logging to %AppData%\PhishingReporter\logs\ with 7-day retention
 - [ ] **INFR-03**: Structured log entries for all report workflow steps (start, GoPhish check, email sent, errors)
-- [ ] **INFR-04**: HtmlAgilityPack updated to latest stable version (1.12.x)
+- [x] **INFR-04**: HtmlAgilityPack updated to latest stable version (1.12.x)
 
 ### Bug Fixes
 
@@ -88,17 +88,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRT-01 | Phase 5 | Pending |
 | STRT-02 | Phase 5 | Pending |
 | STRT-03 | Phase 5 | Pending |
-| STRT-04 | Phase 1 | Pending |
+| STRT-04 | Phase 1 | Complete |
 | STRT-05 | Phase 2 | Pending |
 | NETW-01 | Phase 3 | Pending |
 | NETW-02 | Phase 3 | Pending |
 | NETW-03 | Phase 3 | Pending |
 | NETW-04 | Phase 3 | Pending |
 | NETW-05 | Phase 3 | Pending |
-| INFR-01 | Phase 1 | Pending |
+| INFR-01 | Phase 1 | Complete |
 | INFR-02 | Phase 1 | Pending |
 | INFR-03 | Phase 1 | Pending |
-| INFR-04 | Phase 1 | Pending |
+| INFR-04 | Phase 1 | Complete |
 | BUGF-01 | Phase 2 | Pending |
 | BUGF-02 | Phase 2 | Pending |
 | BUGF-03 | Phase 2 | Pending |
