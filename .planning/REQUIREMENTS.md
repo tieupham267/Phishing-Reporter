@@ -26,8 +26,8 @@ Requirements for reliability release. Each maps to roadmap phases.
 ### Infrastructure
 
 - [x] **INFR-01**: Project upgraded to .NET Framework 4.8 (pre-installed on Windows 10/11, extended support)
-- [ ] **INFR-02**: NLog file logging to %AppData%\PhishingReporter\logs\ with 7-day retention
-- [ ] **INFR-03**: Structured log entries for all report workflow steps (start, GoPhish check, email sent, errors)
+- [x] **INFR-02**: NLog file logging to %AppData%\PhishingReporter\logs\ with 7-day retention
+- [x] **INFR-03**: Structured log entries for all report workflow steps (start, GoPhish check, email sent, errors)
 - [x] **INFR-04**: HtmlAgilityPack updated to latest stable version (1.12.x)
 
 ### Bug Fixes
@@ -96,8 +96,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NETW-04 | Phase 3 | Pending |
 | NETW-05 | Phase 3 | Pending |
 | INFR-01 | Phase 1 | Complete |
-| INFR-02 | Phase 1 | Pending |
-| INFR-03 | Phase 1 | Pending |
+| INFR-02 | Phase 1 | Complete |
+| INFR-03 | Phase 1 | Complete |
 | INFR-04 | Phase 1 | Complete |
 | BUGF-01 | Phase 2 | Pending |
 | BUGF-02 | Phase 2 | Pending |
