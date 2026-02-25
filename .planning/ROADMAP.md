@@ -38,7 +38,11 @@ already contains the resiliency registry key so IT can deploy immediate relief b
   2. On a developer machine, a log file appears at %AppData%\PhishingReporter\logs\ after clicking the report button, containing timestamped entries for each workflow step
   3. The MSI contains the DoNotDisableAddinList registry key, verifiable by inspecting the installer in Orca or running it on a test machine and checking HKLM\Software\Microsoft\Office\Outlook\Addins
   4. HtmlAgilityPack is updated to 1.12.x with no changes to URL extraction behavior
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 01-01-PLAN.md — Retarget to .NET Framework 4.8 and update HtmlAgilityPack to 1.12.4
+- [ ] 01-02-PLAN.md — Add DoNotDisableAddinList registry key to MSI installer
+- [ ] 01-03-PLAN.md — Install NLog 5.4.0 and add structured logging to all workflow steps
 
 ### Phase 2: Code Extraction
 **Goal**: Ribbon.cs is reduced to a thin coordination layer; URL extraction, attachment hashing, and
@@ -107,11 +111,11 @@ Office deployments, and all required resiliency registry keys are in place for O
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/3 | Planned | - |
 | 2. Code Extraction | 0/TBD | Not started | - |
 | 3. Async Network Layer | 0/TBD | Not started | - |
 | 4. Orchestration | 0/TBD | Not started | - |
