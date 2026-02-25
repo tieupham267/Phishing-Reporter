@@ -217,7 +217,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="AppLogger.cs" />
+    <Compile Include="AttachmentHasher.cs" />
     <Compile Include="GoPhishIntegration.cs" />
+    <Compile Include="UrlExtractor.cs" />
     <Compile Include="Ribbon.cs">
       <XmlRibbon>true</XmlRibbon>
     </Compile>
