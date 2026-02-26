@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Code Extraction** - Decompose Ribbon.cs monolith into pure, single-responsibility components
 - [x] **Phase 3: Async Network Layer** - Replace synchronous GoPhish HTTP call with async HttpClient singleton
 - [ ] **Phase 4: Orchestration** - Wire extracted components into async ReportOrchestrator; thin Ribbon.cs to callbacks
-- [ ] **Phase 5: Startup Reliability** - Move initialization outside Outlook's resiliency measurement window
+- [x] **Phase 5: Startup Reliability** - Move initialization outside Outlook's resiliency measurement window
 - [ ] **Phase 6: Enterprise Deployment** - Complete MSI hardening; validate upgrade path from disabled-state machines
 
 ## Phase Details
@@ -101,7 +101,7 @@ event and eliminating the VSTO reflection scan from the startup path.
   3. The add-in remains enabled in Outlook's COM Add-ins dialog across 5 consecutive Outlook restarts on a machine that previously had the add-in auto-disabled
 **Plans:** 1 plan
 Plans:
-- [ ] 05-01-PLAN.md -- CRL bypass, Stopwatch instrumentation, Application.Startup deferred init, STRT-02 verification
+- [x] 05-01-PLAN.md -- CRL bypass, Stopwatch instrumentation, Application.Startup deferred init, STRT-02 verification
 
 ### Phase 6: Enterprise Deployment
 **Goal**: The MSI upgrade path correctly remediates previously-disabled machines by resetting HKCU
@@ -127,5 +127,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Code Extraction | 2/2 | Complete | 2026-02-26 |
 | 3. Async Network Layer | 2/2 | Complete | 2026-02-26 |
 | 4. Orchestration | 0/TBD | Not started | - |
-| 5. Startup Reliability | 0/1 | Not started | - |
+| 5. Startup Reliability | 1/1 | Complete | 2026-02-26 |
 | 6. Enterprise Deployment | 0/TBD | Not started | - |

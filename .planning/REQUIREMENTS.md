@@ -9,9 +9,9 @@ Requirements for reliability release. Each maps to roadmap phases.
 
 ### Startup Reliability
 
-- [ ] **STRT-01**: Add-in initialization deferred to Application.Startup event (outside Outlook's resiliency measurement window)
-- [ ] **STRT-02**: CreateRibbonExtensibilityObject overridden in ThisAddIn to eliminate VSTO reflection scan from startup path
-- [ ] **STRT-03**: Add-in startup time stays under Outlook's 1,000ms resiliency threshold on typical enterprise hardware
+- [x] **STRT-01**: Add-in initialization deferred to Application.Startup event (outside Outlook's resiliency measurement window)
+- [x] **STRT-02**: CreateRibbonExtensibilityObject overridden in ThisAddIn to eliminate VSTO reflection scan from startup path
+- [x] **STRT-03**: Add-in startup time stays under Outlook's 1,000ms resiliency threshold on typical enterprise hardware
 - [x] **STRT-04**: Registry DoNotDisableAddinList key deployed via MSI to prevent auto-disabling
 - [x] **STRT-05**: All ribbon event handler entry points wrapped in try/catch to prevent unhandled exception soft-disable
 
@@ -85,9 +85,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| STRT-01 | Phase 5 | Pending |
-| STRT-02 | Phase 5 | Pending |
-| STRT-03 | Phase 5 | Pending |
+| STRT-01 | Phase 5 | Complete |
+| STRT-02 | Phase 5 | Complete |
+| STRT-03 | Phase 5 | Complete |
 | STRT-04 | Phase 1 | Complete |
 | STRT-05 | Phase 2 | Complete |
 | NETW-01 | Phase 3 | Complete |
