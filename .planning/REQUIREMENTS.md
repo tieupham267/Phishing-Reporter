@@ -17,10 +17,10 @@ Requirements for reliability release. Each maps to roadmap phases.
 
 ### Network Reliability
 
-- [ ] **NETW-01**: GoPhish HTTP call executes asynchronously via HttpClient without blocking the Outlook UI thread
-- [ ] **NETW-02**: HttpClient instantiated as static singleton to prevent socket exhaustion
-- [ ] **NETW-03**: GoPhish HTTP call has configurable timeout (default 10 seconds)
-- [ ] **NETW-04**: GoPhish HTTP call retries with exponential backoff on transient failures (via Polly)
+- [x] **NETW-01**: GoPhish HTTP call executes asynchronously via HttpClient without blocking the Outlook UI thread
+- [x] **NETW-02**: HttpClient instantiated as static singleton to prevent socket exhaustion
+- [x] **NETW-03**: GoPhish HTTP call has configurable timeout (default 10 seconds)
+- [x] **NETW-04**: GoPhish HTTP call retries with exponential backoff on transient failures (via Polly)
 - [ ] **NETW-05**: Report submission completes gracefully if GoPhish server is unreachable (falls back to standard email report)
 
 ### Infrastructure
@@ -35,7 +35,7 @@ Requirements for reliability release. Each maps to roadmap phases.
 - [x] **BUGF-01**: URL detection correctly captures all links (remove broken Contains("a") filter)
 - [x] **BUGF-02**: Report counters persist across Outlook sessions (call Settings.Save() after increment)
 - [x] **BUGF-03**: GoPhish integration returns enum/bool instead of magic strings ("OK", "ERROR", "NaN")
-- [ ] **BUGF-04**: HttpWebResponse and StreamReader properly disposed (replaced by HttpClient)
+- [x] **BUGF-04**: HttpWebResponse and StreamReader properly disposed (replaced by HttpClient)
 - [x] **BUGF-05**: Temporary attachment files cleaned up in finally block
 
 ### Code Quality
@@ -90,10 +90,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRT-03 | Phase 5 | Pending |
 | STRT-04 | Phase 1 | Complete |
 | STRT-05 | Phase 2 | Complete |
-| NETW-01 | Phase 3 | Pending |
-| NETW-02 | Phase 3 | Pending |
-| NETW-03 | Phase 3 | Pending |
-| NETW-04 | Phase 3 | Pending |
+| NETW-01 | Phase 3 | Complete |
+| NETW-02 | Phase 3 | Complete |
+| NETW-03 | Phase 3 | Complete |
+| NETW-04 | Phase 3 | Complete |
 | NETW-05 | Phase 3 | Pending |
 | INFR-01 | Phase 1 | Complete |
 | INFR-02 | Phase 1 | Complete |
@@ -102,7 +102,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BUGF-01 | Phase 2 | Complete |
 | BUGF-02 | Phase 2 | Complete |
 | BUGF-03 | Phase 2 | Complete |
-| BUGF-04 | Phase 3 | Pending |
+| BUGF-04 | Phase 3 | Complete |
 | BUGF-05 | Phase 2 | Complete |
 | QUAL-01 | Phase 4 | Pending |
 | QUAL-02 | Phase 4 | Pending |

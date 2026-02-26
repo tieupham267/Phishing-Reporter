@@ -59,7 +59,7 @@ are fixed as part of the extraction; all entry points are exception-safe.
 **Plans:** 2 plans
 Plans:
 - [x] 02-01-PLAN.md — Exception-safe ribbon callbacks, Settings persistence fix, GoPhish enum refactor
-- [ ] 02-02-PLAN.md — UrlExtractor and AttachmentHasher class extraction, COM object cleanup
+- [x] 02-02-PLAN.md — UrlExtractor and AttachmentHasher class extraction, COM object cleanup
 
 ### Phase 3: Async Network Layer
 **Goal**: The GoPhish HTTP notification executes on a background thread via a static HttpClient
@@ -72,7 +72,10 @@ responsive throughout — including during network failures.
   2. When the GoPhish server is unreachable or times out after 10 seconds, the standard email report still sends successfully and the user sees a confirmation (not a freeze or error dialog)
   3. After reporting 10 consecutive simulated phishing emails, no "address already in use" or socket exhaustion errors appear in the log file
   4. The log shows GoPhish HTTP call attempt, result (success/failure/timeout), and retry count for each report submission
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [x] 03-01-PLAN.md -- Install Polly 8.4.2, add System.Net.Http, rewrite GoPhishIntegration with async HttpClient singleton and Polly resilience pipeline
+- [ ] 03-02-PLAN.md -- Wire async method into ribbon callback
 
 ### Phase 4: Orchestration
 **Goal**: All email data is extracted from Outlook OOM on the UI thread into an immutable EmailReport
@@ -119,8 +122,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-02-26 |
-| 2. Code Extraction | 1/2 | In progress | - |
-| 3. Async Network Layer | 0/TBD | Not started | - |
+| 2. Code Extraction | 2/2 | Complete | 2026-02-26 |
+| 3. Async Network Layer | 1/2 | In Progress | - |
 | 4. Orchestration | 0/TBD | Not started | - |
 | 5. Startup Reliability | 0/TBD | Not started | - |
 | 6. Enterprise Deployment | 0/TBD | Not started | - |
