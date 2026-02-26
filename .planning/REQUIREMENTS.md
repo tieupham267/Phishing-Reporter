@@ -48,10 +48,10 @@ Requirements for reliability release. Each maps to roadmap phases.
 
 ### Enterprise Deployment
 
-- [ ] **DEPL-01**: MSI Custom Action resets HKCU LoadBehavior on upgrade (fixes previously-disabled users)
-- [ ] **DEPL-02**: MSI Custom Action clears HKCU DisabledItems for this add-in on upgrade
-- [ ] **DEPL-03**: MSI writes resiliency AddinList registry key for Outlook 16.0
-- [ ] **DEPL-04**: Installer validated for both 32-bit and 64-bit Office deployments
+- [x] **DEPL-01**: MSI Custom Action resets HKCU LoadBehavior on upgrade (fixes previously-disabled users)
+- [x] **DEPL-02**: MSI Custom Action clears HKCU DisabledItems for this add-in on upgrade
+- [x] **DEPL-03**: MSI writes resiliency AddinList registry key for Outlook 16.0
+- [x] **DEPL-04**: Installer validated for both 32-bit and 64-bit Office deployments
 
 ## v2 Requirements
 
@@ -109,10 +109,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | QUAL-03 | Phase 2 | Complete |
 | QUAL-04 | Phase 2 | Complete |
 | QUAL-05 | Phase 2 | Complete |
-| DEPL-01 | Phase 6 | Pending |
-| DEPL-02 | Phase 6 | Pending |
-| DEPL-03 | Phase 6 | Pending |
-| DEPL-04 | Phase 6 | Pending |
+| DEPL-01 | Phase 6 | Complete |
+| DEPL-02 | Phase 6 | Complete |
+| DEPL-03 | Phase 6 | Complete |
+| DEPL-04 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 28 total
