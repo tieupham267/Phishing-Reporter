@@ -114,7 +114,9 @@ Office deployments, and all required resiliency registry keys are in place for O
   2. After MSI upgrade on a previously-disabled machine, the add-in does not reappear in Outlook's Disabled Items list
   3. The MSI installs and the add-in loads correctly in both 32-bit and 64-bit Office environments (verified on two test machines)
   4. The resiliency AddinList registry key for Outlook 16.0 is present after installation, verifiable in HKCU\Software\Microsoft\Office\16.0\Outlook\Resiliency\AddinList
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 06-01-PLAN.md -- InstallerActions class library, RegistryRemediation custom action, AddinList registry key, 32/64-bit validation
 
 ## Progress
 
@@ -128,4 +130,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Async Network Layer | 2/2 | Complete | 2026-02-26 |
 | 4. Orchestration | 0/TBD | Not started | - |
 | 5. Startup Reliability | 1/1 | Complete | 2026-02-26 |
-| 6. Enterprise Deployment | 0/TBD | Not started | - |
+| 6. Enterprise Deployment | 0/1 | Not started | - |
