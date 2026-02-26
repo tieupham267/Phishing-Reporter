@@ -7,6 +7,7 @@
 using Microsoft.Office.Core;
 using PhishingReporter.Properties;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -104,151 +105,190 @@ namespace PhishingReporter
 
             Selection selection = null;
             MailItem mailItem = null;
-            MailItem reportEmail = null;
 
             try
             {
                 selection = Globals.ThisAddIn.Application.ActiveExplorer().Selection;
-                string reportedItemType = "NaN"; // email, contact, appointment ...etc
-                string reportedItemHeaders = "NaN";
 
-                if (selection.Count < 1) // no item is selected
+                if (selection.Count < 1)
                 {
                     MessageBox.Show("Select an email before reporting.", "Error");
+                    return;
                 }
-                else if (selection.Count > 1) // many items selected
+                if (selection.Count > 1)
                 {
                     MessageBox.Show("You can report 1 email at a time.", "Error");
+                    return;
                 }
-                else // only 1 item is selected
+
+                if (!(selection[1] is Outlook.MeetingItem
+                    || selection[1] is Outlook.ContactItem
+                    || selection[1] is Outlook.AppointmentItem
+                    || selection[1] is Outlook.TaskItem
+                    || selection[1] is Outlook.MailItem))
                 {
-                    if (selection[1] is Outlook.MeetingItem || selection[1] is Outlook.ContactItem || selection[1] is Outlook.AppointmentItem || selection[1] is Outlook.TaskItem || selection[1] is Outlook.MailItem)
-                    {
-                        // Identify the reported item type
-                        if (selection[1] is Outlook.MeetingItem)
-                        {
-                            reportedItemType = "MeetingItem";
-                        }
-                        else if (selection[1] is Outlook.ContactItem)
-                        {
-                            reportedItemType = "ContactItem";
-                        }
-                        else if (selection[1] is Outlook.AppointmentItem)
-                        {
-                            reportedItemType = "AppointmentItem";
-                        }
-                        else if (selection[1] is Outlook.TaskItem)
-                        {
-                            reportedItemType = "TaskItem";
-                        }
-                        else if (selection[1] is Outlook.MailItem)
-                        {
-                            reportedItemType = "MailItem";
-                        }
-
-                        Logger.Info("Reported item type: {0}", reportedItemType);
-
-                        // Prepare Reported Email
-                        mailItem = (reportedItemType == "MailItem") ? selection[1] as MailItem : null;
-
-                        reportEmail = (MailItem)Globals.ThisAddIn.Application.CreateItem(OlItemType.olMailItem);
-                        reportEmail.Attachments.Add(selection[1] as Object);
-
-                        try
-                        {
-                            reportEmail.To = Properties.Settings.Default.infosec_email;
-                            reportEmail.Subject = (reportedItemType == "MailItem") ? "[POTENTIAL PHISH] " + mailItem.Subject : "[POTENTIAL PHISH] " + reportedItemType;
-
-                            // Get Email Headers
-                            if (reportedItemType == "MailItem")
-                            {
-                                reportedItemHeaders = mailItem.HeaderString();
-                            }
-                            else
-                            {
-                                reportedItemHeaders = "Headers were not extracted because the reported item is not an email. It is " + reportedItemType;
-                            }
-
-                            // Check if the email is a simulated phishing campaign by Information Security Team
-                            string simulatedPhishingURL = GoPhishIntegration.setReportURL(reportedItemHeaders);
-                            Logger.Info("GoPhish header check: {0}", simulatedPhishingURL != null ? "found" : "not found");
-
-                            if (simulatedPhishingURL != null)
-                            {
-                                // Delete BEFORE async call — still on UI thread
-                                mailItem.Delete();
-                                Logger.Info("Reported email deleted from mailbox");
-
-                                GoPhishResult goPhishResult = await GoPhishIntegration.SendReportNotificationAsync(simulatedPhishingURL).ConfigureAwait(false);
-                                Logger.Info("GoPhish notification result: {0}", goPhishResult);
-
-                                // Settings access is safe from any thread
-                                Properties.Settings.Default.gophish_reports_counter++;
-                                Properties.Settings.Default.Save();
-
-                                // MessageBox marshals to UI thread automatically
-                                MessageBox.Show("Good job! You have reported a simulated phishing campaign sent by the Information Security Team.", "We have a winner!");
-                            }
-                            else
-                            {
-                                // Non-GoPhish path — no await has occurred, still on UI thread
-                                Properties.Settings.Default.suspecious_reports_counter++;
-                                Properties.Settings.Default.Save();
-
-                                // All OOM access happens here, on UI thread
-                                reportEmail.Body = GetCurrentUserInfos();
-                                reportEmail.Body += "\n";
-                                reportEmail.Body += GetBasicInfo(mailItem);
-                                reportEmail.Body += "\n";
-                                reportEmail.Body += GetURLsAndAttachmentsInfo(mailItem);
-                                reportEmail.Body += "\n";
-                                reportEmail.Body += "---------- Headers ----------";
-                                reportEmail.Body += "\n" + reportedItemHeaders;
-                                reportEmail.Body += "\n";
-                                reportEmail.Body += GetPluginDetails() + "\n\n";
-
-                                Logger.Info("Report email composed for: {0}", mailItem.Subject);
-                                reportEmail.Save();
-                                reportEmail.Send();
-                                Logger.Info("Report email sent to: {0}", Properties.Settings.Default.infosec_email);
-
-                                // Delete AFTER send — still on UI thread (no await in this branch)
-                                mailItem.Delete();
-                                Logger.Info("Reported email deleted from mailbox");
-                            }
-                        }
-                        catch (System.Exception ex)
-                        {
-                            Logger.Error(ex, "Error during report processing");
-                            MessageBox.Show("There was an error! An automatic email was sent to the support to resolve the issue.", "Do not worry");
-
-                            MailItem errorEmail = null;
-                            try
-                            {
-                                errorEmail = (MailItem)Globals.ThisAddIn.Application.CreateItem(OlItemType.olMailItem);
-                                errorEmail.To = Properties.Settings.Default.support_email;
-                                errorEmail.Subject = "[Outlook Addin Error]";
-                                errorEmail.Body = ("Addin error message: " + ex);
-                                errorEmail.Save();
-                                errorEmail.Send();
-                            }
-                            finally
-                            {
-                                if (errorEmail != null) { try { Marshal.ReleaseComObject(errorEmail); } catch { } errorEmail = null; }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("You cannot report this item", "Error");
-                    }
+                    MessageBox.Show("You cannot report this item", "Error");
+                    return;
                 }
+
+                mailItem = selection[1] as MailItem;
+
+                // ALL OOM data extraction happens here, on the UI thread
+                EmailReport report = ExtractEmailReport(selection[1], mailItem);
+                Logger.Info("Email data extracted, item type: {0}", report.ItemType);
+
+                // Delegate to orchestrator — the only await in this method
+                await ReportOrchestrator.ExecuteAsync(
+                    report,
+                    Globals.ThisAddIn.Application,
+                    selection[1],
+                    mailItem).ConfigureAwait(false);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error(ex, "Error during report processing");
+
+                try
+                {
+                    MessageBox.Show(
+                        "There was an error! An automatic email was sent to the support to resolve the issue.",
+                        "Do not worry");
+                }
+                catch
+                {
+                    // Swallow — MessageBox can fail in degraded COM states
+                }
+
+                SendErrorEmail(ex);
             }
             finally
             {
-                if (reportEmail != null) { try { Marshal.ReleaseComObject(reportEmail); } catch { } reportEmail = null; }
                 if (mailItem != null) { try { Marshal.ReleaseComObject(mailItem); } catch { } mailItem = null; }
                 if (selection != null) { try { Marshal.ReleaseComObject(selection); } catch { } selection = null; }
+            }
+        }
+
+        /// <summary>
+        /// Extracts all Outlook OOM data into an immutable EmailReport.
+        /// MUST be called on the UI thread — accesses COM objects.
+        /// </summary>
+        private EmailReport ExtractEmailReport(object selectedItem, MailItem mailItem)
+        {
+            // Detect item type
+            string itemType;
+            if (selectedItem is Outlook.MeetingItem) itemType = "MeetingItem";
+            else if (selectedItem is Outlook.ContactItem) itemType = "ContactItem";
+            else if (selectedItem is Outlook.AppointmentItem) itemType = "AppointmentItem";
+            else if (selectedItem is Outlook.TaskItem) itemType = "TaskItem";
+            else if (selectedItem is Outlook.MailItem) itemType = "MailItem";
+            else itemType = "Unknown";
+
+            bool isMailItem = (itemType == "MailItem");
+
+            // Extract mail-specific data (null for non-MailItem)
+            string subject = isMailItem ? mailItem.Subject : itemType;
+            string headers = isMailItem ? mailItem.HeaderString() : null;
+            string htmlBody = isMailItem ? mailItem.HTMLBody : null;
+
+            // GoPhish detection (pure string parsing on extracted headers)
+            string goPhishReportUrl = (headers != null)
+                ? GoPhishIntegration.setReportURL(headers)
+                : null;
+
+            Logger.Info("Reported item type: {0}", itemType);
+            Logger.Info("GoPhish header check: {0}", goPhishReportUrl != null ? "found" : "not found");
+
+            // Pre-compute URL analysis from extracted HTML (no OOM access in UrlExtractor)
+            UrlExtractionResult urlAnalysis = (htmlBody != null)
+                ? UrlExtractor.ExtractUrls(htmlBody)
+                : new UrlExtractionResult(
+                    Array.Empty<string>(),
+                    Array.Empty<string>());
+
+            // Pre-compute attachment hashes (OOM access to Attachments collection)
+            IReadOnlyList<AttachmentHashResult> attachmentHashes = isMailItem
+                ? ExtractAttachmentHashes(mailItem)
+                : (IReadOnlyList<AttachmentHashResult>)Array.Empty<AttachmentHashResult>();
+
+            // Pre-compute formatted sections (OOM access in each method)
+            string userInfoSection = GetCurrentUserInfos();
+            string basicInfoSection = isMailItem ? GetBasicInfo(mailItem) : null;
+            string pluginDetailsSection = GetPluginDetails();
+
+            return new EmailReport(
+                itemType: itemType,
+                isMailItem: isMailItem,
+                subject: subject,
+                headers: headers,
+                htmlBody: htmlBody,
+                goPhishReportUrl: goPhishReportUrl,
+                urlAnalysis: urlAnalysis,
+                attachmentHashes: attachmentHashes,
+                userInfoSection: userInfoSection,
+                basicInfoSection: basicInfoSection,
+                pluginDetailsSection: pluginDetailsSection);
+        }
+
+        /// <summary>
+        /// Extracts hashes for all attachments. Handles COM object lifecycle.
+        /// </summary>
+        private IReadOnlyList<AttachmentHashResult> ExtractAttachmentHashes(MailItem mailItem)
+        {
+            Outlook.Attachments attachments = null;
+            try
+            {
+                attachments = mailItem.Attachments;
+                var hashes = new List<AttachmentHashResult>(attachments.Count);
+
+                for (int i = 1; i <= attachments.Count; i++)
+                {
+                    Outlook.Attachment a = null;
+                    try
+                    {
+                        a = attachments[i];
+                        hashes.Add(AttachmentHasher.ComputeHashes(a));
+                    }
+                    finally
+                    {
+                        if (a != null) { try { Marshal.ReleaseComObject(a); } catch { } a = null; }
+                    }
+                }
+
+                return hashes.AsReadOnly();
+            }
+            finally
+            {
+                if (attachments != null) { try { Marshal.ReleaseComObject(attachments); } catch { } attachments = null; }
+            }
+        }
+
+        /// <summary>
+        /// Sends an error notification email to support. Stays in Ribbon.cs because
+        /// it needs OOM (Application.CreateItem). May be called from a background thread
+        /// after an await — wrapped in try/catch for COMException safety.
+        /// </summary>
+        private void SendErrorEmail(System.Exception ex)
+        {
+            MailItem errorEmail = null;
+            try
+            {
+                errorEmail = (MailItem)Globals.ThisAddIn.Application
+                    .CreateItem(OlItemType.olMailItem);
+                errorEmail.To = Properties.Settings.Default.support_email;
+                errorEmail.Subject = "[Outlook Addin Error]";
+                errorEmail.Body = "Addin error message: " + ex;
+                errorEmail.Save();
+                errorEmail.Send();
+                Logger.Info("Error email sent to support: {0}", Properties.Settings.Default.support_email);
+            }
+            catch (System.Exception sendEx)
+            {
+                // May fail with COMException if called from background thread after await
+                Logger.Error(sendEx, "Failed to send error email to support");
+            }
+            finally
+            {
+                if (errorEmail != null) { try { Marshal.ReleaseComObject(errorEmail); } catch { } errorEmail = null; }
             }
         }
 
@@ -318,58 +358,6 @@ namespace PhishingReporter
             }
 
             return str + "\n";
-        }
-
-        public String GetURLsAndAttachmentsInfo(MailItem mailItem)
-        {
-            string result = "---------- URLs and Attachments ----------";
-
-            // URL extraction delegated to UrlExtractor (QUAL-03, BUGF-01)
-            var urlResult = UrlExtractor.ExtractUrls(mailItem.HTMLBody);
-
-            result += "\n # of unique Domains: " + urlResult.UniqueDomains.Count;
-            foreach (string domain in urlResult.UniqueDomains)
-            {
-                result += "\n --> Domain: " + domain.Replace(":", "[:]");
-            }
-
-            result += "\n\n # of URLs: " + urlResult.Urls.Count;
-            foreach (string url in urlResult.Urls)
-            {
-                result += "\n --> URL: " + url.Replace(":", "[:]");
-            }
-
-            // Attachment hashing delegated to AttachmentHasher (QUAL-04, BUGF-05)
-            Outlook.Attachments attachments = null;
-            try
-            {
-                attachments = mailItem.Attachments;
-                result += "\n\n # of Attachments: " + attachments.Count;
-
-                for (int i = 1; i <= attachments.Count; i++)
-                {
-                    Attachment a = null;
-                    try
-                    {
-                        a = attachments[i];
-                        var hashResult = AttachmentHasher.ComputeHashes(a);
-                        result += "\n --> Attachment: " + hashResult.FileName
-                            + " (" + hashResult.SizeBytes + " bytes)"
-                            + "\n\t\tMD5: " + hashResult.Md5
-                            + "\n\t\tSha256: " + hashResult.Sha256 + "\n";
-                    }
-                    finally
-                    {
-                        if (a != null) { try { Marshal.ReleaseComObject(a); } catch { } a = null; }
-                    }
-                }
-            }
-            finally
-            {
-                if (attachments != null) { try { Marshal.ReleaseComObject(attachments); } catch { } attachments = null; }
-            }
-
-            return result;
         }
 
 
