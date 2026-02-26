@@ -240,7 +240,9 @@
     </Compile>
     <Compile Include="AppLogger.cs" />
     <Compile Include="AttachmentHasher.cs" />
+    <Compile Include="EmailReport.cs" />
     <Compile Include="GoPhishIntegration.cs" />
+    <Compile Include="ReportOrchestrator.cs" />
     <Compile Include="UrlExtractor.cs" />
     <Compile Include="Ribbon.cs">
       <XmlRibbon>true</XmlRibbon>
