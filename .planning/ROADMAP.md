@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Foundation** - Upgrade framework, establish logging, and deploy immediate registry relief via MSI
 - [ ] **Phase 2: Code Extraction** - Decompose Ribbon.cs monolith into pure, single-responsibility components
-- [ ] **Phase 3: Async Network Layer** - Replace synchronous GoPhish HTTP call with async HttpClient singleton
+- [x] **Phase 3: Async Network Layer** - Replace synchronous GoPhish HTTP call with async HttpClient singleton
 - [ ] **Phase 4: Orchestration** - Wire extracted components into async ReportOrchestrator; thin Ribbon.cs to callbacks
 - [ ] **Phase 5: Startup Reliability** - Move initialization outside Outlook's resiliency measurement window
 - [ ] **Phase 6: Enterprise Deployment** - Complete MSI hardening; validate upgrade path from disabled-state machines
@@ -75,7 +75,7 @@ responsive throughout — including during network failures.
 **Plans:** 2 plans
 Plans:
 - [x] 03-01-PLAN.md -- Install Polly 8.4.2, add System.Net.Http, rewrite GoPhishIntegration with async HttpClient singleton and Polly resilience pipeline
-- [ ] 03-02-PLAN.md -- Wire async method into ribbon callback
+- [x] 03-02-PLAN.md -- Wire async method into ribbon callback
 
 ### Phase 4: Orchestration
 **Goal**: All email data is extracted from Outlook OOM on the UI thread into an immutable EmailReport
@@ -123,7 +123,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-02-26 |
 | 2. Code Extraction | 2/2 | Complete | 2026-02-26 |
-| 3. Async Network Layer | 1/2 | In Progress | - |
+| 3. Async Network Layer | 2/2 | Complete | 2026-02-26 |
 | 4. Orchestration | 0/TBD | Not started | - |
 | 5. Startup Reliability | 0/TBD | Not started | - |
 | 6. Enterprise Deployment | 0/TBD | Not started | - |

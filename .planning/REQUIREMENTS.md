@@ -21,7 +21,7 @@ Requirements for reliability release. Each maps to roadmap phases.
 - [x] **NETW-02**: HttpClient instantiated as static singleton to prevent socket exhaustion
 - [x] **NETW-03**: GoPhish HTTP call has configurable timeout (default 10 seconds)
 - [x] **NETW-04**: GoPhish HTTP call retries with exponential backoff on transient failures (via Polly)
-- [ ] **NETW-05**: Report submission completes gracefully if GoPhish server is unreachable (falls back to standard email report)
+- [x] **NETW-05**: Report submission completes gracefully if GoPhish server is unreachable (falls back to standard email report)
 
 ### Infrastructure
 
@@ -94,7 +94,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NETW-02 | Phase 3 | Complete |
 | NETW-03 | Phase 3 | Complete |
 | NETW-04 | Phase 3 | Complete |
-| NETW-05 | Phase 3 | Pending |
+| NETW-05 | Phase 3 | Complete |
 | INFR-01 | Phase 1 | Complete |
 | INFR-02 | Phase 1 | Complete |
 | INFR-03 | Phase 1 | Complete |
@@ -121,4 +121,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-26 after 02-01 plan completion*
+*Last updated: 2026-02-26 after 03-02 plan completion*

@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-02-26T00:14:48.000Z"
+last_updated: "2026-02-26T00:19:37.000Z"
 progress:
   total_phases: 6
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** The add-in must load reliably in Outlook and let users report phishing emails without disrupting their workflow.
-**Current focus:** Phase 3 In Progress — Async Network Layer (Plan 1 of 2 complete)
+**Current focus:** Phase 3 Complete — Async Network Layer (2 of 2 plans complete)
 
 ## Current Position
 
-Phase: 3 of 6 (Async Network Layer)
-Plan: 1 of 2 in current phase
-Status: Plan 03-01 Complete
-Last activity: 2026-02-26 — Completed 03-01-PLAN.md (HttpClient singleton + Polly resilience pipeline)
+Phase: 3 of 6 (Async Network Layer) -- COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase 03 Complete
+Last activity: 2026-02-26 — Completed 03-02-PLAN.md (Async ribbon callback wiring)
 
-Progress: [██████░░░░] 50%
+Progress: [██████░░░░] 58%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 4 min
-- Total execution time: 0.42 hours
+- Total execution time: 0.45 hours
 
 **By Phase:**
 
@@ -42,10 +42,10 @@ Progress: [██████░░░░] 50%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 14 min | 5 min |
 | 02-code-extraction | 2 | 8 min | 4 min |
-| 03-async-network-layer | 1 | 3 min | 3 min |
+| 03-async-network-layer | 2 | 5 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (5 min), 01-03 (4 min), 02-01 (3 min), 02-02 (5 min), 03-01 (3 min)
+- Last 5 plans: 01-03 (4 min), 02-01 (3 min), 02-02 (5 min), 03-01 (3 min), 03-02 (2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -73,6 +73,8 @@ Recent decisions affecting current work:
 - [03-01]: Wrapped ServicePoint DNS setup in try/catch — prevents static constructor failure if gophish_url is misconfigured
 - [03-01]: Removed explicit TLS 1.2 protocol setting — .NET 4.8 on Win10/11 defaults to system TLS (1.2+)
 - [03-01]: HttpClient.Timeout = InfiniteTimeSpan — lets Polly manage all timeout behavior (avoids Pitfall 5)
+- [03-02]: mailItem.Delete() moved into each branch — GoPhish branch deletes before await (UI thread), email branch deletes after send (no await, UI thread)
+- [03-02]: async void is correct for COM ribbon callback — cannot return Task; existing try/catch safety net from Phase 2 prevents unhandled exceptions
 
 ### Critical Pitfalls (from research — must not be forgotten)
 
@@ -96,6 +98,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed 03-01-PLAN.md
-Resume command: /gsd:execute-phase 3
-Resume file: .planning/phases/03-async-network-layer
+Stopped at: Completed 03-02-PLAN.md (Phase 03 complete)
+Resume command: /gsd:execute-phase 4
+Resume file: .planning/phases/04-async-orchestration
