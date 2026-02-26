@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Interop.Outlook;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
@@ -63,7 +64,7 @@ namespace PhishingReporter
         }
 
         // Functions
-        public void reportPhishing(Office.IRibbonControl control)
+        public async void reportPhishing(Office.IRibbonControl control)
         {
             try
             {
@@ -72,7 +73,7 @@ namespace PhishingReporter
                 if(areYouSure == DialogResult.Yes)
                 {
                     Logger.Info("User confirmed report submission");
-                    reportPhishingEmailToSecurityTeam(control);
+                    await reportPhishingEmailToSecurityTeamAsync(control).ConfigureAwait(false);
                 }
                 else
                 {
@@ -97,7 +98,7 @@ namespace PhishingReporter
          *  Helper functions 
          */
 
-        private void reportPhishingEmailToSecurityTeam(IRibbonControl control)
+        private async Task reportPhishingEmailToSecurityTeamAsync(IRibbonControl control)
         {
             Logger.Info("Processing selected email for phishing report");
 
@@ -174,23 +175,27 @@ namespace PhishingReporter
 
                             if (simulatedPhishingURL != null)
                             {
-                                GoPhishResult goPhishResult = GoPhishIntegration.sendReportNotificationToServer(simulatedPhishingURL);
+                                // Delete BEFORE async call — still on UI thread
+                                mailItem.Delete();
+                                Logger.Info("Reported email deleted from mailbox");
+
+                                GoPhishResult goPhishResult = await GoPhishIntegration.SendReportNotificationAsync(simulatedPhishingURL).ConfigureAwait(false);
                                 Logger.Info("GoPhish notification result: {0}", goPhishResult);
 
-                                // Update GoPhish Campaigns Reported counter
+                                // Settings access is safe from any thread
                                 Properties.Settings.Default.gophish_reports_counter++;
                                 Properties.Settings.Default.Save();
 
-                                // Thanks
+                                // MessageBox marshals to UI thread automatically
                                 MessageBox.Show("Good job! You have reported a simulated phishing campaign sent by the Information Security Team.", "We have a winner!");
                             }
                             else
                             {
-                                // Update Suspecious Emails Reported counter
+                                // Non-GoPhish path — no await has occurred, still on UI thread
                                 Properties.Settings.Default.suspecious_reports_counter++;
                                 Properties.Settings.Default.Save();
 
-                                // Prepare the email body
+                                // All OOM access happens here, on UI thread
                                 reportEmail.Body = GetCurrentUserInfos();
                                 reportEmail.Body += "\n";
                                 reportEmail.Body += GetBasicInfo(mailItem);
@@ -206,11 +211,11 @@ namespace PhishingReporter
                                 reportEmail.Save();
                                 reportEmail.Send();
                                 Logger.Info("Report email sent to: {0}", Properties.Settings.Default.infosec_email);
-                            }
 
-                            // Delete the reported email
-                            mailItem.Delete();
-                            Logger.Info("Reported email deleted from mailbox");
+                                // Delete AFTER send — still on UI thread (no await in this branch)
+                                mailItem.Delete();
+                                Logger.Info("Reported email deleted from mailbox");
+                            }
                         }
                         catch (System.Exception ex)
                         {
