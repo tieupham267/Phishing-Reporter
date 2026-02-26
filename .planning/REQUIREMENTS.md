@@ -40,8 +40,8 @@ Requirements for reliability release. Each maps to roadmap phases.
 
 ### Code Quality
 
-- [ ] **QUAL-01**: Email processing logic extracted from Ribbon.cs into dedicated EmailProcessor class
-- [ ] **QUAL-02**: GoPhish integration refactored with async HttpClient and proper result types
+- [x] **QUAL-01**: Email processing logic extracted from Ribbon.cs into dedicated EmailProcessor class
+- [x] **QUAL-02**: GoPhish integration refactored with async HttpClient and proper result types
 - [x] **QUAL-03**: URL extraction logic extracted into URLExtractor class
 - [x] **QUAL-04**: Hash calculation logic extracted into AttachmentHasher class
 - [x] **QUAL-05**: COM objects properly released via Marshal.ReleaseComObject in all processing loops
@@ -104,8 +104,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BUGF-03 | Phase 2 | Complete |
 | BUGF-04 | Phase 3 | Complete |
 | BUGF-05 | Phase 2 | Complete |
-| QUAL-01 | Phase 4 | Pending |
-| QUAL-02 | Phase 4 | Pending |
+| QUAL-01 | Phase 4 | Complete |
+| QUAL-02 | Phase 4 | Complete |
 | QUAL-03 | Phase 2 | Complete |
 | QUAL-04 | Phase 2 | Complete |
 | QUAL-05 | Phase 2 | Complete |

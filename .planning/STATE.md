@@ -2,26 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-26T00:25:27.063Z"
-progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 7
-  completed_plans: 7
----
-
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
 status: in-progress
-last_updated: "2026-02-26T00:19:37.000Z"
+last_updated: "2026-02-26T13:01:23Z"
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 8
 ---
 
 # Project State
@@ -31,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** The add-in must load reliably in Outlook and let users report phishing emails without disrupting their workflow.
-**Current focus:** Phase 3 Complete — Async Network Layer (2 of 2 plans complete)
+**Current focus:** Phase 4 In Progress — Orchestration (1 of 2 plans complete)
 
 ## Current Position
 
-Phase: 3 of 6 (Async Network Layer) -- COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase 03 Complete
-Last activity: 2026-02-26 — Completed 03-02-PLAN.md (Async ribbon callback wiring)
+Phase: 4 of 6 (Orchestration)
+Plan: 1 of 2 in current phase
+Status: Plan 04-01 Complete
+Last activity: 2026-02-26 — Completed 04-01-PLAN.md (EmailReport DTO + ReportOrchestrator)
 
-Progress: [██████░░░░] 58%
+Progress: [████████░░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 4 min
-- Total execution time: 0.45 hours
+- Total execution time: 0.48 hours
 
 **By Phase:**
 
@@ -56,9 +43,10 @@ Progress: [██████░░░░] 58%
 | 01-foundation | 3 | 14 min | 5 min |
 | 02-code-extraction | 2 | 8 min | 4 min |
 | 03-async-network-layer | 2 | 5 min | 3 min |
+| 04-orchestration | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (4 min), 02-01 (3 min), 02-02 (5 min), 03-01 (3 min), 03-02 (2 min)
+- Last 5 plans: 02-01 (3 min), 02-02 (5 min), 03-01 (3 min), 03-02 (2 min), 04-01 (2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -88,6 +76,10 @@ Recent decisions affecting current work:
 - [03-01]: HttpClient.Timeout = InfiniteTimeSpan — lets Polly manage all timeout behavior (avoids Pitfall 5)
 - [03-02]: mailItem.Delete() moved into each branch — GoPhish branch deletes before await (UI thread), email branch deletes after send (no await, UI thread)
 - [03-02]: async void is correct for COM ribbon callback — cannot return Task; existing try/catch safety net from Phase 2 prevents unhandled exceptions
+- [04-01]: Split ReportOrchestrator into async GoPhish branch and sync standard branch — makes threading contract explicit per method
+- [04-01]: Pre-format report sections as strings in EmailReport — raw data (ExchangeUser, MAPIFolder) requires COM objects unsafe across threads
+- [04-01]: Eliminated dead GoPhish branch reportEmail creation — original code created but never sent reportEmail in GoPhish path
+- [04-01]: reportEmail COM lifecycle self-contained in ExecuteStandardReportBranch — created and released in same method
 
 ### Critical Pitfalls (from research — must not be forgotten)
 
@@ -111,6 +103,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed 03-02-PLAN.md (Phase 03 complete)
+Stopped at: Completed 04-01-PLAN.md (EmailReport DTO + ReportOrchestrator)
 Resume command: /gsd:execute-phase 4
-Resume file: .planning/phases/04-async-orchestration
+Resume file: .planning/phases/04-orchestration
