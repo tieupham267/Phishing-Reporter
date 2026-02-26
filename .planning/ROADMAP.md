@@ -99,7 +99,9 @@ event and eliminating the VSTO reflection scan from the startup path.
   1. On a representative enterprise machine (not a developer workstation), Outlook Event ID 45 for this add-in shows a median load time under 1,000 ms across 5 consecutive cold starts after a reboot
   2. ThisAddIn_Startup returns in under 5 ms (verifiable via log timestamp between "startup begin" and "startup end" entries)
   3. The add-in remains enabled in Outlook's COM Add-ins dialog across 5 consecutive Outlook restarts on a machine that previously had the add-in auto-disabled
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 05-01-PLAN.md -- CRL bypass, Stopwatch instrumentation, Application.Startup deferred init, STRT-02 verification
 
 ### Phase 6: Enterprise Deployment
 **Goal**: The MSI upgrade path correctly remediates previously-disabled machines by resetting HKCU
@@ -125,5 +127,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Code Extraction | 2/2 | Complete | 2026-02-26 |
 | 3. Async Network Layer | 2/2 | Complete | 2026-02-26 |
 | 4. Orchestration | 0/TBD | Not started | - |
-| 5. Startup Reliability | 0/TBD | Not started | - |
+| 5. Startup Reliability | 0/1 | Not started | - |
 | 6. Enterprise Deployment | 0/TBD | Not started | - |
