@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-02-26T13:01:23Z"
+last_updated: "2026-02-26T13:06:41Z"
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-25)
 
 **Core value:** The add-in must load reliably in Outlook and let users report phishing emails without disrupting their workflow.
-**Current focus:** Phase 4 In Progress — Orchestration (1 of 2 plans complete)
+**Current focus:** Phase 4 Complete — Orchestration (2 of 2 plans complete)
 
 ## Current Position
 
-Phase: 4 of 6 (Orchestration)
-Plan: 1 of 2 in current phase
-Status: Plan 04-01 Complete
-Last activity: 2026-02-26 — Completed 04-01-PLAN.md (EmailReport DTO + ReportOrchestrator)
+Phase: 4 of 6 (Orchestration) - COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase 04-orchestration Complete
+Last activity: 2026-02-26 — Completed 04-02-PLAN.md (Ribbon wiring + csproj entries)
 
-Progress: [████████░░] 67%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 9
 - Average duration: 4 min
-- Total execution time: 0.48 hours
+- Total execution time: 0.51 hours
 
 **By Phase:**
 
@@ -43,10 +43,10 @@ Progress: [████████░░] 67%
 | 01-foundation | 3 | 14 min | 5 min |
 | 02-code-extraction | 2 | 8 min | 4 min |
 | 03-async-network-layer | 2 | 5 min | 3 min |
-| 04-orchestration | 1 | 2 min | 2 min |
+| 04-orchestration | 2 | 4 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (3 min), 02-02 (5 min), 03-01 (3 min), 03-02 (2 min), 04-01 (2 min)
+- Last 5 plans: 02-02 (5 min), 03-01 (3 min), 03-02 (2 min), 04-01 (2 min), 04-02 (2 min)
 - Trend: stable
 
 *Updated after each plan completion*
@@ -80,6 +80,10 @@ Recent decisions affecting current work:
 - [04-01]: Pre-format report sections as strings in EmailReport — raw data (ExchangeUser, MAPIFolder) requires COM objects unsafe across threads
 - [04-01]: Eliminated dead GoPhish branch reportEmail creation — original code created but never sent reportEmail in GoPhish path
 - [04-01]: reportEmail COM lifecycle self-contained in ExecuteStandardReportBranch — created and released in same method
+- [04-02]: Early return pattern for selection validation — less nesting, clearer control flow than nested else-if
+- [04-02]: SendErrorEmail wrapped in try/catch for COMException safety — may be called from background thread after await
+- [04-02]: ExtractAttachmentHashes separated from ExtractEmailReport — dedicated method for clean COM lifecycle per attachment
+- [04-02]: Retained GetBasicInfo/GetCurrentUserInfos/GetPluginDetails in Ribbon.cs — they access OOM objects requiring UI thread
 
 ### Critical Pitfalls (from research — must not be forgotten)
 
@@ -103,6 +107,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-26
-Stopped at: Completed 04-01-PLAN.md (EmailReport DTO + ReportOrchestrator)
-Resume command: /gsd:execute-phase 4
-Resume file: .planning/phases/04-orchestration
+Stopped at: Completed 04-02-PLAN.md (Ribbon wiring + csproj entries) - Phase 4 Complete
+Resume command: /gsd:execute-phase 5
+Resume file: .planning/phases/05-startup-performance
