@@ -1,17 +1,18 @@
-﻿/*
+/*
  * Developer: Abdulla Albreiki
  * Github: https://github.com/0dteam
  * licensed under the GNU General Public License v3.0
  */
 
-using System.Net;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Text;
 using System;
-using System.Security.Authentication;
-using PhishingReporter;
+using System.Net;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using Polly;
+using Polly.Retry;
+using Polly.Timeout;
 
 namespace PhishingReporter
 {
@@ -41,6 +42,63 @@ namespace PhishingReporter
         static string WebExpID = GoPhishHeader + @": [0-9a-zA-Z]+";
         static string WebExpPrefix = GoPhishHeader + @": ";
 
+        // NETW-02: Static singleton prevents socket exhaustion
+        private static readonly HttpClient HttpClientInstance;
+
+        // NETW-03 + NETW-04: Resilience pipeline with retry + timeout
+        private static readonly ResiliencePipeline<HttpResponseMessage> Pipeline;
+
+        static GoPhishIntegration()
+        {
+            // NETW-02: Singleton HttpClient -- never dispose
+            HttpClientInstance = new HttpClient
+            {
+                // Let Polly manage all timeouts (Pitfall 5: HttpClient.Timeout vs Polly conflict)
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan
+            };
+
+            // .NET Framework 4.8 DNS workaround: no SocketsHttpHandler available
+            // ConnectionLeaseTimeout forces periodic connection recycling for DNS changes
+            try
+            {
+                var baseUrl = Properties.Settings.Default.gophish_url;
+                var port = Properties.Settings.Default.gophish_listener_port;
+                if (!string.IsNullOrEmpty(baseUrl))
+                {
+                    var baseUri = new Uri(baseUrl + ":" + port);
+                    var sp = ServicePointManager.FindServicePoint(baseUri);
+                    sp.ConnectionLeaseTimeout = 60_000; // 1 minute
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Failed to configure ServicePoint for GoPhish URL -- DNS recycling disabled");
+            }
+
+            // NETW-03 + NETW-04: Retry with exponential backoff + per-attempt timeout
+            // Strategy order is FIFO: retry wraps timeout (timeout is per-attempt)
+            Pipeline = new ResiliencePipelineBuilder<HttpResponseMessage>()
+                .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
+                {
+                    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                        .Handle<HttpRequestException>()
+                        .Handle<TimeoutRejectedException>(),
+                    MaxRetryAttempts = 3,
+                    Delay = TimeSpan.FromSeconds(1),
+                    BackoffType = DelayBackoffType.Exponential,
+                    UseJitter = true,
+                    OnRetry = static args =>
+                    {
+                        var logger = AppLogger.Instance.GetCurrentClassLogger();
+                        logger.Warn("GoPhish retry attempt {0} after {1}ms delay",
+                            args.AttemptNumber, args.RetryDelay.TotalMilliseconds);
+                        return default;
+                    }
+                })
+                .AddTimeout(TimeSpan.FromSeconds(10)) // NETW-03: 10-second per-attempt timeout
+                .Build();
+        }
+
         // This function constructs GoPhish report url from a custom header in the simulated phishing campaign email
         public static string setReportURL(string headers)
         {
@@ -67,28 +125,43 @@ namespace PhishingReporter
             return null;
         }
 
-        public const SslProtocols _strTls12 = (SslProtocols)0x00000C00;
-        public const SecurityProtocolType Tls12 = (SecurityProtocolType)_strTls12;
-
-        public static GoPhishResult sendReportNotificationToServer(string reportURL)
+        /// <summary>
+        /// Sends a report notification to the GoPhish server asynchronously.
+        /// NETW-01: Does not block the UI thread.
+        /// BUGF-04: HttpClient manages response lifecycle (no manual dispose needed).
+        /// </summary>
+        public static async Task<GoPhishResult> SendReportNotificationAsync(string reportUrl)
         {
-            Logger.Info("Sending GoPhish report notification to: {0}", reportURL);
-            ServicePointManager.SecurityProtocol = Tls12;
+            Logger.Info("Sending GoPhish report notification to: {0}", reportUrl);
 
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(reportURL);
-                var response = (HttpWebResponse)request.GetResponse();
-                string html = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                Logger.Info("GoPhish notification sent successfully");
-                return GoPhishResult.Reported;
+                using (var response = await Pipeline.ExecuteAsync(
+                    async ct => await HttpClientInstance.GetAsync(reportUrl, ct)
+                        .ConfigureAwait(false),
+                    CancellationToken.None).ConfigureAwait(false))
+                {
+                    Logger.Info("GoPhish notification result: HTTP {0}", (int)response.StatusCode);
+                    return response.IsSuccessStatusCode
+                        ? GoPhishResult.Reported
+                        : GoPhishResult.Error;
+                }
             }
-            catch (System.Exception exc)
+            catch (TimeoutRejectedException)
             {
-                Logger.Error(exc, "GoPhish notification failed");
-                return GoPhishResult.Error; // GoPhish Listener is not responding or there is no Internet connection.
+                Logger.Warn("GoPhish notification timed out after all retry attempts");
+                return GoPhishResult.Error;
+            }
+            catch (HttpRequestException ex)
+            {
+                Logger.Error(ex, "GoPhish notification failed after all retry attempts");
+                return GoPhishResult.Error;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "GoPhish notification unexpected error");
+                return GoPhishResult.Error;
             }
         }
     }
 }
-
