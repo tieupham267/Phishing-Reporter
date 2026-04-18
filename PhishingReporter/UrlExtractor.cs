@@ -32,6 +32,12 @@ namespace PhishingReporter
         private static readonly NLog.Logger Logger =
             AppLogger.Instance.GetCurrentClassLogger();
 
+        // Characters that terminate a domain inside a raw mailto href. Covers
+        // path/query/fragment (/, ?, #) plus query-parameter separators (&)
+        // and multi-recipient separators (, ;) commonly seen in mailto links.
+        private static readonly char[] MailtoDomainTerminators =
+            { '/', '?', '#', '&', ',', ';', ' ' };
+
         /// <summary>
         /// Extracts all href values from anchor tags in the provided HTML.
         /// </summary>
@@ -70,30 +76,36 @@ namespace PhishingReporter
                 // All href values are captured regardless of content.
                 urls.Add(href);
 
-                // Domain extraction
-                try
+                // Domain extraction — TryCreate avoids exception-based control flow
+                // and keeps garbage hrefs (from malformed HTML, inline CSS leaking into
+                // attributes, javascript:/data: schemes, relative links, anchor hashes)
+                // out of the WARN log.
+                if (Uri.TryCreate(href, UriKind.Absolute, out var uri)
+                    && !string.IsNullOrEmpty(uri.Host))
                 {
-                    domains.Add(new Uri(href).Host);
+                    domains.Add(uri.Host);
                 }
-                catch (UriFormatException)
+                else if (href.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Handle mailto: links -- extract domain from email address
+                    // Defensive fallback — Uri.TryCreate resolves well-formed
+                    // "mailto:foo@bar.com" via the first branch (uri.Host is populated).
+                    // This branch handles malformed mailto or the query-form variant
+                    // "mailto:?to=user@domain.com&subject=...", where Host is empty.
                     int atIndex = href.IndexOf('@');
-                    if (atIndex >= 0)
+                    if (atIndex >= 0 && atIndex < href.Length - 1)
                     {
                         string emailDomain = href.Substring(atIndex + 1);
-                        // Trim any trailing path/query from the domain
-                        int slashIndex = emailDomain.IndexOf('/');
-                        if (slashIndex >= 0)
-                            emailDomain = emailDomain.Substring(0, slashIndex);
+                        int terminator = emailDomain.IndexOfAny(MailtoDomainTerminators);
+                        if (terminator >= 0)
+                            emailDomain = emailDomain.Substring(0, terminator);
 
                         if (!string.IsNullOrWhiteSpace(emailDomain))
                             domains.Add(emailDomain);
                     }
-                    else
-                    {
-                        Logger.Warn("Unparseable URL skipped for domain extraction: {0}", href);
-                    }
+                }
+                else
+                {
+                    Logger.Debug("Skipped non-URL href for domain extraction: {0}", href);
                 }
             }
 
@@ -102,7 +114,7 @@ namespace PhishingReporter
 
             return new UrlExtractionResult(
                 urls.AsReadOnly(),
-                domains.ToList().AsReadOnly());
+                new List<string>(domains).AsReadOnly());
         }
     }
 }

@@ -38,11 +38,11 @@ If you plan to use the plugin, please fill the 3 Questions [survey](https://form
 3. From the top menu, if it is on `Debug` mode, change configuration to `Release`.
 4. In the right menu, Open `Settings.settings` and go to `Settings` Tab.
 5. From there, change:
-	- infosec_email: to your information security team.
-	- gophish_url: GoPhish instance IP/URL, if you didn't host any, you can leave the default value. The plugin will still work.
-	- gophish_listener_port: The port number of GoPhish listener.
-	- support_email: Support email to auto-report any bugs. Should be for a teammate who maintains the plugin code.
-6. Save the file.
+	- **`infosec_email`** — **REQUIRED**. The default value `Information Security Team <infosec@configure-me.invalid>` deliberately uses the RFC 6761 `.invalid` TLD so that a forgotten configuration bounces instantly with a clear DSN instead of silently delivering reports to an unintended address. Change it to the real recipient that will triage phishing reports, formatted as `Display Name <user@your-domain.com>` or just `user@your-domain.com`. If you skip this step, the add-in compiles and runs but every Report click produces a bounce email.
+	- `gophish_url`: GoPhish instance IP/URL, if you didn't host any, you can leave the default value. The plugin will still work.
+	- `gophish_listener_port`: The port number of GoPhish listener.
+	- `support_email`: Support email to auto-report any bugs. Should be for a teammate who maintains the plugin code.
+6. Save the file. This updates `app.config`, `Settings.settings`, and `Settings.Designer.cs` — commit all three together so deployment and dev use the same defaults.
 7. Build the project. From the top menu `Build` → `Build PhishingReporter`.
 8. In the right menu, Click `Installer` and change what you prefer on `Properties` Menu, I recommend to change:
 	- Manufacturer, ManufacturerUrl, SupportPhone, SupportUrl

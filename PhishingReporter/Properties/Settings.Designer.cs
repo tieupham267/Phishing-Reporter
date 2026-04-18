@@ -25,7 +25,7 @@ namespace PhishingReporter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Information Security Team <infosec@example.com>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Information Security Team <infosec@configure-me.invalid>")]
         public string infosec_email {
             get {
                 return ((string)(this["infosec_email"]));

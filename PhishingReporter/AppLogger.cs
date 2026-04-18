@@ -19,13 +19,31 @@ namespace PhishingReporter
 
         private static LogFactory BuildLogFactory()
         {
+            // Loaded from embedded resource instead of Assembly.Location, because VSTO
+            // shadow-copies the DLL into AppData\Local\assembly\dl3\... without bringing
+            // arbitrary content files along — a file-path-based load throws FileNotFound.
             var thisAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-            var configDir = System.IO.Path.GetDirectoryName(thisAssembly.Location);
-            var configFilePath = System.IO.Path.Combine(configDir, "NLog.config");
+            const string resourceName = "PhishingReporter.NLog.config";
 
-            var logFactory = new LogFactory();
-            logFactory.Configuration = new XmlLoggingConfiguration(configFilePath, logFactory);
-            return logFactory;
+            using (var stream = thisAssembly.GetManifestResourceStream(resourceName))
+            {
+                if (stream == null)
+                {
+                    throw new InvalidOperationException(
+                        "Embedded resource '" + resourceName + "' not found in PhishingReporter assembly.");
+                }
+
+                var logFactory = new LogFactory();
+                using (var xmlReader = System.Xml.XmlReader.Create(stream))
+                {
+                    // basePath = AppDomain.CurrentDomain.BaseDirectory future-proofs any
+                    // target that later uses a relative fileName. Current NLog.config only
+                    // uses ${specialfolder} (absolute) renderers, so this has no effect today.
+                    logFactory.Configuration = new XmlLoggingConfiguration(
+                        xmlReader, AppDomain.CurrentDomain.BaseDirectory, logFactory);
+                }
+                return logFactory;
+            }
         }
     }
 }

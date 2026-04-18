@@ -87,7 +87,7 @@ namespace PhishingReporter
                     Delay = TimeSpan.FromSeconds(1),
                     BackoffType = DelayBackoffType.Exponential,
                     UseJitter = true,
-                    OnRetry = static args =>
+                    OnRetry = args =>
                     {
                         var logger = AppLogger.Instance.GetCurrentClassLogger();
                         logger.Warn("GoPhish retry attempt {0} after {1}ms delay",

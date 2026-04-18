@@ -224,9 +224,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <EmbeddedResource Include="NLog.config" />
     <None Include="PhishingReporter_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -280,7 +278,7 @@
     <ManifestKeyFile>PhishingReporter_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>49F4622D1A7A5798A0337CEE03366CECC8D37E0C</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>F4C4612DFB5A1FDB805E03AF823CA83D04EF67DD</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>phishing.ico</ApplicationIcon>
